@@ -113,7 +113,7 @@ export class Spectral {
       ...refDiagnostics,
       ...results,
       ...formatResolverErrors(resolved),
-      ...runRules(resolved, this.rules, this.functions),
+      ...(await runRules(resolved, this.rules, this.functions)),
     ];
 
     return {

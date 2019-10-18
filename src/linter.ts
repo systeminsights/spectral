@@ -11,13 +11,13 @@ import { IFunction, IGivenNode, IRuleResult, IRunRule, IThen } from './types';
 import { isObject } from './utils';
 
 // TODO(SO-23): unit test but mock whatShouldBeLinted
-export const lintNode = (
+export const lintNode = async (
   node: IGivenNode,
   rule: IRunRule,
   then: IThen<string, any>,
   apply: IFunction,
   resolved: Resolved,
-): IRuleResult[] => {
+): Promise<IRuleResult[]> => {
   const givenPath = node.path[0] === '$' ? node.path.slice(1) : node.path;
   const conditioning = whatShouldBeLinted(givenPath, node.value, rule);
 
@@ -81,7 +81,7 @@ export const lintNode = (
     const targetPath = givenPath.concat(target.path);
 
     const targetResults =
-      apply(
+      (await apply(
         target.value,
         then.functionOptions || {},
         {
@@ -93,7 +93,7 @@ export const lintNode = (
           given: node.value,
           resolved,
         },
-      ) || [];
+      )) || [];
 
     results = results.concat(
       targetResults.map<IRuleResult>(result => {

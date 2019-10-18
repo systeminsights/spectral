@@ -9,11 +9,11 @@ import { hasIntersectingElement } from './utils/';
 
 export const isRuleEnabled = (rule: IRule) => rule.severity !== void 0 && getDiagnosticSeverity(rule.severity) !== -1;
 
-export const runRules = (
+export const runRules = async (
   resolved: Resolved,
   rules: RunRuleCollection,
   functions: FunctionCollection,
-): IRuleResult[] => {
+): Promise<IRuleResult[]> => {
   let results: IRuleResult[] = [];
 
   for (const name in rules) {
@@ -34,7 +34,7 @@ export const runRules = (
     }
 
     try {
-      results = results.concat(runRule(resolved, rule, functions));
+      results = results.concat(await runRule(resolved, rule, functions));
     } catch (e) {
       console.error(`Unable to run rule '${name}':\n${e}`);
     }
@@ -43,7 +43,7 @@ export const runRules = (
   return results;
 };
 
-const runRule = (resolved: Resolved, rule: IRunRule, functions: FunctionCollection): IRuleResult[] => {
+const runRule = async (resolved: Resolved, rule: IRunRule, functions: FunctionCollection): Promise<IRuleResult[]> => {
   const target = rule.resolved === false ? resolved.unresolved : resolved.resolved;
 
   const results: IRuleResult[] = [];
@@ -83,7 +83,7 @@ const runRule = (resolved: Resolved, rule: IRunRule, functions: FunctionCollecti
           continue;
         }
 
-        results.push(...lintNode(node, rule, then, func, resolved));
+        results.push(...(await lintNode(node, rule, then, func, resolved)));
       }
     } catch (e) {
       console.warn(`Encountered error when running rule '${rule.name}' on node at path '${node.path}':\n${e}`);
