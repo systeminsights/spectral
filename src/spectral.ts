@@ -90,6 +90,7 @@ export class Spectral {
           mergeKeys: true,
         }),
         getLocationForJsonPath: getLocationForJsonPathYAML,
+        // we need to normalize the path in case path with forward slashes is given
         source: opts.resolve?.documentUri && normalize(opts.resolve.documentUri),
       };
     } else {

@@ -36,6 +36,7 @@ export class Resolved {
     this.errors = resolveResult.errors;
   }
 
+  // this method detects whether given json path points to a place in original unresolved document
   public doesBelongToSourceDoc(path: JsonPath): boolean {
     if (path.length === 0) {
       // todo: each rule and their function should be context-aware, meaning they should aware of the fact they operate on resolved content
